@@ -1,0 +1,8 @@
+
+# text editor cache files
+*.swp
+*.swo
+*~
+
+# vagrant
+.vagrant/

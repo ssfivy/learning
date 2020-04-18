@@ -15,6 +15,8 @@ RUNTIMEDIR_PROFILER=$TOPDIR/profiler
 
 mkdir -p $BUILDDIR $PREFIXDIR_NGINX $RUNTIMEDIR_PROFILER
 
+NGINX_PIDFILE=${PREFIXDIR_NGINX}/nginx.pid
+
 # SOme useful links:
 # https://raychen.net/blog/2013/08/16/nginx_upload_module.html
 # https://serverfault.com/questions/227480/installing-optional-nginx-modules-with-apt-get
@@ -57,7 +59,7 @@ build_nginx () {
         --prefix=${PREFIXDIR_NGINX} \
         --sbin-path=${PREFIXDIR_NGINX}/nginx.bin \
         --conf-path=${PREFIXDIR_NGINX}/nginx.conf \
-        --pid-path=${PREFIXDIR_NGINX}/nginx.pid \
+        --pid-path=${NGINX_PIDFILE} \
         --with-http_ssl_module \
         --with-stream \
         --add-module=${BUILDDIR}/$UPLOAD_MODULE_EXTRACTED_DIRNAME \

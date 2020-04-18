@@ -1,0 +1,5 @@
+# Syrupy output
+*.log
+*.raw
+
+lrn_build/

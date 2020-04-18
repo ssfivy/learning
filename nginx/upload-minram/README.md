@@ -22,3 +22,10 @@ Some factors that might affect things:
 - These stackoverflow answers indicate reverse proxying won't consume much resources:
     - https://serverfault.com/questions/624897/getting-a-chunked-request-through-nginx
     - https://serverfault.com/questions/159313/enabling-nginx-chunked-transfer-encoding
+
+Memory measurement techniques:
+- https://stackoverflow.com/questions/774556/peak-memory-usage-of-a-linux-unix-process
+- https://unix.stackexchange.com/questions/77370/how-to-measure-on-linux-the-peak-memory-of-an-application-after-has-ended
+- https://serverfault.com/questions/387268/linux-cpu-usage-and-process-execution-history
+
+Since we are simply interested in whether the uploaded file is cached in RAM, the simpler methods should be okay ( time -v or syrupy  https://github.com/jeetsukumaran/Syrupy )

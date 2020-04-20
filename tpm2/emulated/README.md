@@ -25,8 +25,8 @@ Reference: https://github.com/latchset/clevis/issues/123
     - https://github.com/vagrant-libvirt/vagrant-libvirt#installation
     - Try using libvirt backend to run a VM which has tpm2 emulated from the get-go. This should make Clevis work.
 
-- Add Microsoft's software tpm2 emulator: https://github.com/microsoft/ms-tpm-20-ref
-- Add swtpm ( &libtpmms) https://github.com/stefanberger/swtpm
+[x] Add Microsoft's software tpm2 emulator: https://github.com/microsoft/ms-tpm-20-ref
+[x] Add swtpm ( &libtpmms) https://github.com/stefanberger/swtpm
 - Try using swtpm backend to tpm2-tss: https://github.com/tpm2-software/tpm2-tss/pull/1542
 
 - Try performing basic crypto operations using tpm2 tools

@@ -21,13 +21,13 @@ do_cleanup () {
 }
 trap do_cleanup EXIT
 
-start_qemu () {
+start_qemu_simple () {
 qemu-system-x86_64 -display sdl -accel kvm \
     -bios /usr/share/qemu/OVMF.fd \
     -m 1024 \
     -hda $VM_DIR/instance-1/instance-1.qcow2
 }
-start_qemu
+#start_qemu_simple
 
 start_qemu_cloud () {
 qemu-system-x86_64 \
@@ -50,11 +50,17 @@ qemu-system-x86_64 \
 #start_qemu_cloud
 
 start_kvm () {
-     kvm -m 8192 \
+    qemu-system-x86_64 \
+    -display sdl \
+    -accel kvm \
+    -m 1024 \
     -smp 4 \
     -device e1000,netdev=user.0 \
     -netdev user,id=user.0,hostfwd=tcp::5555-:22 \
     -drive file=$VM_DIR/instance-1/instance-1.qcow2,if=virtio,cache=writeback,index=0 \
+    -chardev socket,id=chrtpm,path=/tmp/mytpm2/swtpm-sock \
+    -tpmdev emulator,id=tpm0,chardev=chrtpm \
+    -device tpm-tis,tpmdev=tpm0 \
     -cdrom $VM_DIR/instance-1/cloudinit.img
 }
-#start_kvm
+start_kvm

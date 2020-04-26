@@ -7,4 +7,6 @@
 - swtpm prebuilt ppa: https://launchpad.net/ubuntu/+ppas?name_filter=swtpm
 
 
-I seem to get stuck on "Booting from hard disk" stage. Either I have a bad image or ubuntu 18.04 is missing some support for my ryzen cpu.
+I seem to get stuck on "Booting from hard disk" stage when using the ubuntu cloud image.
+
+I can get swtpm working using qemu and kvm when using an ubuntu server installer iso.

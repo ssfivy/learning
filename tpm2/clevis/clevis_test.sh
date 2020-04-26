@@ -44,3 +44,21 @@ else
     echo "Failure: Plaintext different!"
     exit 1
 fi
+
+OTHERMACHINE_USER="$USER"
+OTHERMACHINE_IP="localhost"
+OTHERMACHINE_PORT="5555"
+other_machine_test () {
+    #scp -p $OTHERMACHINE_PORT $WORKDIR/encrypted.1M $OTHERMACHINE_USER@$OTHERMACHINE_IP:/tmp
+
+    # Check we can ssh and remote can do tpm sealing
+    # just encrypt some random file on remote filesystem
+    ssh -p $OTHERMACHINE_PORT $OTHERMACHINE_USER@$OTHERMACHINE_IP "clevis encrypt tpm2 '{}' < /etc/hostname > /tmp/enc.test"
+
+    # Somehow scp does not work with my vm, but ssh does - so use pipe through ssh
+    cat $WORKDIR/encrypted.1M   | ssh  -p $OTHERMACHINE_PORT $OTHERMACHINE_USER@$OTHERMACHINE_IP "cat - > /tmp/encrypted.1M"
+
+    # this should fail!
+    ssh -p $OTHERMACHINE_PORT $OTHERMACHINE_USER@$OTHERMACHINE_IP "clevis decrypt < /tmp/encrypted.1M > /tmp/plaintext.1M" || echo "Test successful!"
+}
+other_machine_test

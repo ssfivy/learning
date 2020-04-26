@@ -26,9 +26,10 @@ install_prerequisites () {
         exit 1
     fi
     # FIXME: Sorry, ubuntu focal fossa only!
-    sudo add-apt-repository -y ppa:stefanberger/swtpm-focal
+    #sudo add-apt-repository -y ppa:stefanberger/swtpm-focal
     sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        qemu qemu-kvm swtpm
+        qemu qemu-kvm \
+        #swtpm
 }
 install_prerequisites
 
@@ -66,7 +67,8 @@ popd
 }
 #setup_cloud_init
 
-
+# Add our locally built swtpm
+export PATH="$PATH:$(realpath $THIS_SCRIPT_DIR/../../tpm2/emulated/lrn_build/swtpm-prefix/bin)"
 swtpm socket --tpmstate dir=$TPM_DIR \
   --ctrl type=unixio,path=$TPM_DIR/swtpm-sock \
   --log level=20 --tpm2 &
@@ -80,8 +82,8 @@ start_kvm () {
     qemu-system-x86_64 \
     -display gtk \
     -accel kvm \
-    -m 1024 \
-    -smp 4 \
+    -m 512 \
+    -smp 2 \
     -device e1000,netdev=user.0 \
     -netdev user,id=user.0,hostfwd=tcp::5555-:22 \
     -drive file=$VM_DIR/instance-2/instance-2.qcow2,if=virtio,cache=writeback,index=0 \

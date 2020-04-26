@@ -25,8 +25,10 @@ install_prerequisites () {
         echo "ERROR: User must be a member of kvm group to run qemu"
         exit 1
     fi
+    # FIXME: Sorry, ubuntu focal fossa only!
+    sudo add-apt-repository -y ppa:stefanberger/swtpm-focal
     sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        qemu qemu-kvm
+        qemu qemu-kvm swtpm
 }
 install_prerequisites
 
@@ -76,7 +78,7 @@ trap do_cleanup EXIT
 
 start_kvm () {
     qemu-system-x86_64 \
-    -display sdl \
+    -display gtk \
     -accel kvm \
     -m 1024 \
     -smp 4 \

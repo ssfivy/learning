@@ -17,6 +17,7 @@ TPM_DIR=$(realpath "$THIS_SCRIPT_DIR/mytpm2")
 
 mkdir -p  $VM_DIR/base
 mkdir -p  $VM_DIR/instance-2
+mkdir -p  $TPM_DIR
 
 install_prerequisites () {
     # TODO: Add qemu, libvirt, kvm install
@@ -63,6 +64,16 @@ popd
 }
 #setup_cloud_init
 
+
+swtpm socket --tpmstate dir=$TPM_DIR \
+  --ctrl type=unixio,path=$TPM_DIR/swtpm-sock \
+  --log level=20 --tpm2 &
+
+do_cleanup () {
+    kill %1
+}
+trap do_cleanup EXIT
+
 start_kvm () {
     qemu-system-x86_64 \
     -display sdl \
@@ -72,7 +83,7 @@ start_kvm () {
     -device e1000,netdev=user.0 \
     -netdev user,id=user.0,hostfwd=tcp::5555-:22 \
     -drive file=$VM_DIR/instance-2/instance-2.qcow2,if=virtio,cache=writeback,index=0 \
-    -chardev socket,id=chrtpm,path=/tmp/mytpm2/swtpm-sock \
+    -chardev socket,id=chrtpm,path=$TPM_DIR/swtpm-sock \
     -tpmdev emulator,id=tpm0,chardev=chrtpm \
     -device tpm-tis,tpmdev=tpm0 \
     -cdrom $VM_DIR/base/$IMAGE_NAME

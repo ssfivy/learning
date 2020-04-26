@@ -25,7 +25,6 @@ install_system() {
     expect \
     libtasn1-dev \
     socat \
-    tpm-tools \
     python3-twisted \
     gnutls-dev \
     gnutls-bin \

@@ -19,7 +19,15 @@ DavidAntliff's code seems to use the older adafruit library described here: http
 
 ## BME280 Temperature, Humidity, Barometric sensor
 
-TODO
+Adafruit's library works straightforward again, for the most part.
+See guide here: https://learn.adafruit.com/adafruit-bme280-humidity-barometric-pressure-temperature-sensor-breakout/python-circuitpython-test
+Note the device in floral bonnet is on I2c address 0x76, adafruit library defaults to 0x77 so need to set that.
+
+The temperature values seem wrong out of the box.
+It's about 4C higher compared to my (uncalibrated) extech ex330 thermocoulple.
+Need to figure out why.
+Perhaps the board design causes heat from other components to conduct to the sensor through the ground lines?
+
 
 ## TSL2561 Light sensor
 

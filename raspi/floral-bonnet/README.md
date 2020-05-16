@@ -46,3 +46,14 @@ Button is active low.
 ## Running
 Added systemd service file so it starts up automatically without needing any network/ssh or the like.
 (the time will be gibberish without network tho)
+
+## A better temperature sensor
+Since the temp sensor in BME280 is blatantly false (sensed: 26C Weather: 16C) I want to try other sensors.
+
+I have an ancient DS1820 but no pullup resistor :(
+Once I got a pullup I will give it a try.
+The default 1wire pin in raspi is used by the button, so we need to use another pin.
+Some promising guides:
+- https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing/hardware
+- https://raspberrypi.stackexchange.com/questions/4844/how-to-change-the-pin-used-for-the-1-wire-bus
+- https://pinout.xyz/pinout/1_wire#

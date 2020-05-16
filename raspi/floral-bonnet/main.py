@@ -29,10 +29,10 @@ def setup_i2csensors():
     # http://www.bom.gov.au/products/IDN60801/IDN60801.94767.shtml
     bme280.sea_level_pressure = 1030.2
 
-    bme280._iir_filter = adafruit_bme280.IIR_FILTER_DISABLE
-    bme280._overscan_temperature = adafruit_bme280.OVERSCAN_X1
-    bme280._overscan_humidity = adafruit_bme280.OVERSCAN_X1
-    bme280._overscan_pressure = adafruit_bme280.OVERSCAN_X1
+    bme280._iir_filter = adafruit_bme280.IIR_FILTER_X16
+    bme280._overscan_temperature = adafruit_bme280.OVERSCAN_X16
+    bme280._overscan_humidity = adafruit_bme280.OVERSCAN_X16
+    bme280._overscan_pressure = adafruit_bme280.OVERSCAN_X16
 
     tsl2561.enabled = True
     time.sleep(1)

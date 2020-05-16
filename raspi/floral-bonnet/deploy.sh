@@ -14,4 +14,8 @@ THIS_SCRIPT_DIR=$(dirname $(realpath -s $0))
 
 ssh $USER@$IPADDR mkdir -p /home/$USER/floral-bonnet
 scp -r $THIS_SCRIPT_DIR/* $USER@$IPADDR:/home/$USER/floral-bonnet
-ssh $USER@$IPADDR /home/$USER/floral-bonnet/main.py
+ssh $USER@$IPADDR sudo cp -v /home/$USER/floral-bonnet/floral-bonnet.service /etc/systemd/system
+ssh $USER@$IPADDR sudo systemctl daemon-reload
+ssh $USER@$IPADDR sudo systemctl enable floral-bonnet.service
+ssh $USER@$IPADDR sudo systemctl restart floral-bonnet.service
+#ssh $USER@$IPADDR /home/$USER/floral-bonnet/main.py

@@ -22,7 +22,7 @@ sudo apt-get install -y \
 
 # my goodness pip3 on raspi zero w is uber slow
 sudo pip3 install --upgrade setuptools pip
-sudo pip3 install RPI.GPIO adafruit-blinka adafruit-circuitpython-ssd1306 adafruit-circuitpython-bme280
+sudo pip3 install RPI.GPIO adafruit-blinka adafruit-circuitpython-ssd1306 adafruit-circuitpython-bme280 adafruit-circuitpython-tsl2561
 
 
 #EOF

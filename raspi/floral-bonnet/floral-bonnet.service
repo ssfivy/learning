@@ -1,0 +1,11 @@
+[Unit]
+Description=Floral bonnet playground program
+
+[Service]
+WorkingDirectory=/home/pi/floral-bonnet
+User=pi
+ExecStart=/home/pi/floral-bonnet/main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

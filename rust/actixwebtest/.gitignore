@@ -1,0 +1,5 @@
+# don't commit builds
+target/*
+
+#lets ignore cargo locks for now - learn one thing at a time
+Cargo.lock

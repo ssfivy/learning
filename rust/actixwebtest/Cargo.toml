@@ -1,0 +1,11 @@
+[package]
+name = "actixwebtest"
+version = "0.1.0"
+authors = ["ssfivy <2441149-ssfivy@users.noreply.gitlab.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "2.0"
+actix-rt = "1.0"

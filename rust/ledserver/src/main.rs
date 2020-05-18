@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::Result;
 
 use sysfs_gpio::{Direction, Pin};
+use std::sync::mpsc;
+use std::thread;
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -30,15 +32,9 @@ struct JsonSchema {
 
 
 
-fn led_daemon() {
+fn led_daemon(rx:mpsc::Receiver<String>) {
 
     let bittime_ms = DEFAULT_BITTIME_MS;
-    let data = r#"
-    {"ledpatterns": [{"ledid": 2,
-                  "pattern": [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]},
-                 {"ledid": 3, "pattern": [0, 0, 0, 0, 1, 1, 1, 1]}],
-     "version": 0}
-    "#;
 
 
     // open all LEDs
@@ -51,9 +47,15 @@ fn led_daemon() {
 
 
     loop {
-        let lp: JsonSchema = serde_json::from_str(data).unwrap(); // TODO: Fail on parse error
-        println!("{:?}", lp.version);
-        println!("{:?}", lp.ledpatterns[0].pattern);
+        match rx.try_recv() {
+            Ok(received) => {
+                println!("Got new message: {}", received);
+                let lp: JsonSchema = serde_json::from_str(&received).unwrap(); // TODO: Fail on parse error
+                println!("{:?}", lp.version);
+                println!("{:?}", lp.ledpatterns[0].pattern);
+            }
+            Err(err) => println!("didnt get new message {}", err ),
+        }
 
         println!("OFF");
         redled.set_value(0).unwrap();
@@ -76,6 +78,19 @@ fn main() {
     //TODO: config file parsing
 
     //TODO: socket server
-    //TODO: spawn thread
-    led_daemon();
+    let (tx, rx) = mpsc::channel();
+    let handle = thread::spawn(move || {
+        led_daemon(rx);
+    });
+
+    let data = r#"
+    {"ledpatterns": [{"ledid": 2,
+                  "pattern": [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]},
+                 {"ledid": 3, "pattern": [0, 0, 0, 0, 1, 1, 1, 1]}],
+     "version": 0}
+    "#;
+    tx.send(data.to_string()).unwrap();
+
+    //TODO: Terminate gently?
+    handle.join().unwrap();
 }

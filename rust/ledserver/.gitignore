@@ -1,0 +1,5 @@
+# rust build directory
+target/*
+
+# Don't deal with lock for now
+Cargo.lock

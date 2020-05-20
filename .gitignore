@@ -9,3 +9,6 @@ lrn_build/
 
 # vagrant
 .vagrant/
+
+# cscope
+cscope.*

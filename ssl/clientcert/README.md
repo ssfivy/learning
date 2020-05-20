@@ -7,3 +7,5 @@ Based on https://stackoverflow.com/questions/54491901/how-to-generate-both-serve
 TODO: Validate agianst: https://gist.github.com/mtigas/952344
 
 Validation code roughly guided by https://www.electricmonk.nl/log/2018/06/02/ssl-tls-client-certificate-verification-with-python-v3-4-sslcontext/
+
+TODO2: Try with nginx and curl: https://stackoverflow.com/questions/31305376/using-client-certificate-in-curl-command

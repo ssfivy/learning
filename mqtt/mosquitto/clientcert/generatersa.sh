@@ -22,7 +22,7 @@ echo -e "${BOLD}Generating RSA AES-256 Private Key for Root Certificate Authorit
 PARAMS=(
     genrsa                          # Generate RSA private key
     -out CA.Root.key    # output key to this file
-    4096                            # generate this number of bits
+    2048                            # generate this number of bits
 )
 openssl ${PARAMS[@]}
 
@@ -49,7 +49,7 @@ echo -e "${BOLD}Generating RSA Private Key for Server Certificate${CLEAR}"
 PARAMS=(
     genrsa                      # Generate RSA private key
     -out server.key # output key to this file
-    4096                        # generate this number of bits
+    2048                        # generate this number of bits
 )
 openssl ${PARAMS[@]}
 
@@ -89,7 +89,7 @@ echo -e "${BOLD}Generating RSA Private Key for Client Certificate${CLEAR}"
 PARAMS=(
     genrsa
     -out client.key
-    4096
+    2048
 )
 openssl ${PARAMS[@]}
 

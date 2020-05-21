@@ -20,6 +20,7 @@ PARAMS=(
 -q 1 # qos 1
 -t learning/clientcert
 -m "hellothere_tls"
+-V mqttv311
 )
 mosquitto_pub  ${PARAMS[@]}
 
@@ -34,5 +35,6 @@ PARAMS=(
 -q 1 # qos 1
 -t learning/clientcert
 -m "hellothere_tls_clientcert"
+-V mqttv311
 )
 mosquitto_pub  ${PARAMS[@]}

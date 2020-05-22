@@ -10,7 +10,8 @@ THIS_SCRIPT_DIR=$(dirname "$(realpath -s $0)")
 sudo apt-get build-dep vagrant ruby-libvirt
 sudo apt-get install -y \
     qemu libvirt-daemon-system libvirt-clients ebtables dnsmasq-base \
-    libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev
+    libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev \
+    qemu-kvm qemu-utils
 
 vagrant plugin install vagrant-libvirt
 

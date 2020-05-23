@@ -6,6 +6,7 @@
 
 # Source code build directories (our own convention)
 lrn_build/
+lrn_work/
 
 # vagrant
 .vagrant/

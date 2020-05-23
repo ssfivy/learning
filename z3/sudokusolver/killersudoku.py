@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# solves for killer sudoku, specifically this: https://www.youtube.com/watch?v=QRM4T8dq9oc
+
 import math
 import pprint
 import string
@@ -50,8 +52,9 @@ def add_killer_cage(s, cage_coords, cage_sum):
     s.add(z3.Distinct(cagecells))
     s.add(z3.Sum(cagecells) == cage_sum)
 
-# Try implementing solver for this: https://www.youtube.com/watch?v=QRM4T8dq9oc
 
+# man these are really annoying to type
+# not gonna do more killer sudokus
 
 cages = []
 cages.append({'coords': [(0, 0), (0, 1), (1, 0), (2, 0), (3, 0)], 'sum': 20})

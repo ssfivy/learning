@@ -9,3 +9,5 @@ which seems interesting to re-implement (even though the gist there is working p
 Reference: https://ericpony.github.io/z3py-tutorial/guide-examples.htm
 
 Goal: Replicate https://gist.github.com/sielicki/fd86d68733133f654128519b3c4e12c2
+
+Ended up writing two solutions for two puzzles, I'm happy so far.

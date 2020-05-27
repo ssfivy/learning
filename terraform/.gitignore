@@ -1,0 +1,9 @@
+# terraform binary files
+.terraform/
+
+# terraform state files - should be stored in S3 or the like
+*.tfstate*
+
+# terraform variables incl. passwords
+# should be uncommented fora  real project
+#*.tfvars

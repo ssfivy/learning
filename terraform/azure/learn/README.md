@@ -4,8 +4,9 @@ Going through the terraform learning guide on Azure.
 
 Next steps:
 
-[ ] Remote state storage
+[x] Remote state storage
 [ ] Not committing secrets (.gitignore *.tfvars?)
+[ ] VM access using ssh keys
 
 ## Azure cheatsheet
 

@@ -6,4 +6,4 @@
 
 # terraform variables incl. passwords
 # should be uncommented fora  real project
-#*.tfvars
+*.tfvars

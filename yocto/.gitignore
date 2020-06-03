@@ -1,5 +1,5 @@
 # Ignore for yocto builds
 
-build/*
-downloads/*
-upstream/*
+*/build/*
+*/downloads/*
+*/upstream/*

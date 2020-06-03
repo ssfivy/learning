@@ -1,0 +1,8 @@
+# Buildroot source directory
+buildroot/
+
+# Download directory
+dl/
+
+# Build directory
+build/

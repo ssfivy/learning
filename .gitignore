@@ -13,3 +13,6 @@ lrn_work/
 
 # cscope
 cscope.*
+
+# jupyter notebook checkpoints
+.ipynb_checkpoints/

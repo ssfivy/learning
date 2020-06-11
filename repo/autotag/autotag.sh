@@ -4,8 +4,9 @@ set -xe
 
 THIS_SCRIPT_DIR=$(dirname "$(realpath -s "$0")")
 TOPDIR=$(realpath "$THIS_SCRIPT_DIR/../../../")
-MANIFESTREPO="$TOPDIR/learning-repo"
+MANIFESTREPO="$TOPDIR/learning-manifest"
 
+REMOTE_NAME="gl-ssfivy"
 FIXEDREV_BRANCH_NAME="buildtags"
 
 # assume fresh repo sync
@@ -18,46 +19,48 @@ cleanrepo () {
 }
 cleanrepo
 
-check-branch-local () {
-    # Ensure the manifest repo has a branch for storing fixed revisions
-    if git show-ref --verify --quiet refs/heads/$FIXEDREV_BRANCH_NAME ; then
-        : #local branch exists
-    else
-        # create local branch
-        git branch -c $FIXEDREV_BRANCH_NAME
-    fi
-}
-#check-branch-local
-
 check-branch-remote () {
     #Validate remote branch too
-    if git ls-remote --heads $FIXEDREV_BRANCH_NAME ; then
+    if git ls-remote --heads $REMOTE_NAME $FIXEDREV_BRANCH_NAME ; then
         : #remote branch exists
     else
         # create remote branch
-        git push --set-upstream gl-ssfivy $FIXEDREV_BRANCH_NAME
+        # only works automatically if checked out via ssh
+        # since our manifest is using http urls, this does not work for now.
+        #git push --set-upstream gl-ssfivy $FIXEDREV_BRANCH_NAME
+        echo "Please create a remote branch named '$FIXEDREV_BRANCH_NAME'"
+        exit 1
     fi
 }
-#check-branch-remote
+check-branch-remote
 
 # Branches should be guaranteed setup at this point
-git checkout $FIXEDREV_BRANCH_NAME
 
 lock-manifest () {
-    # Overwrite default.xml with our newly generated one
-    rm default.xml
-    repo manifest -r -o default.xml
-}
-#lock-manifest
+    # we want to snapshot default branch
+    DEFAULT_BRANCH_NAME=$(git remote show gl-ssfivy | grep "HEAD branch" | sed 's/.*: //' )
+    git checkout "$DEFAULT_BRANCH_NAME"
+    # Make sure you snapshot the revisions BEFORE checking out the branch with all the revision data!
+    # Since the content of this branch changes everytime we make a snapshot,
+    # if you dont do this you will always create a new shapshot record even though nothing else has changed.
+    repo manifest -r -o new-default.xml
+    # Switch to the branch where we record everything
+    git checkout $FIXEDREV_BRANCH_NAME
 
-push-manifest () {
-    # commit and push
-    git add default.xml
-    COMMIT_MESSAGE="Manifest revision locked at $(date --iso-8601=seconds)"
-    git commit -m "$COMMIT_MESSAGE"
-    git push gl-ssfivy $FIXEDREV_BRANCH_NAME
+    # Only create new commit of things change
+    if cmp --quiet new-default.xml default.xml ; then
+        echo "Revisions not changed, not committing"
+    else
+        # Overwrite default.xml with our newly generated one
+        mv new-default.xml default.xml
+        # File is changed, commit and push
+        git add default.xml
+        COMMIT_MESSAGE="Manifest revision locked at $(date --iso-8601=seconds)"
+        git commit -m "$COMMIT_MESSAGE"
+        git push $REMOTE_NAME $FIXEDREV_BRANCH_NAME
+    fi
 }
-#push-manifest
+lock-manifest
 
 # Done!
 

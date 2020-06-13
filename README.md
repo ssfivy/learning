@@ -6,4 +6,4 @@ This is the place where I put in various little scripts / exercises that I did w
 
 Maybe I should make a table of contents here (automatically?). Until then feel free to browse the directories.
 
-Everything here is MIT-licensed.
+Everything here is MIT-licensed, unless stated otherwise in the specific folders.

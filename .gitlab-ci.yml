@@ -1,0 +1,26 @@
+---
+
+image: ubuntu
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  before_script:
+    - apt update && apt -y install build-essential
+    - pwd
+    - ls -l
+    - cd gnu/gnu-hello/hello-2.10
+  script:
+    - ./configure
+    - make
+  artifacts:
+    paths:
+      - hello
+
+test:
+  stage: test
+  script:
+    - make check

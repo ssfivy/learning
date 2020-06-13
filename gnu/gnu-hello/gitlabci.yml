@@ -1,0 +1,42 @@
+
+build-hello:
+  # FIXME: make a custom image with build-essential preinstalled!
+  image: ubuntu
+  stage: c-build
+  rules:
+    - changes: # only run job if this directory has changes
+      - gnu/gnu-hello/hello-2.10
+      - gnu/gnu-hello/gitlabci.yml
+      when: always
+    - when: never
+  before_script:
+    - apt-get update && apt-get -y install build-essential
+    - pwd
+    - ls -l
+  script:
+    - cd gnu/gnu-hello/hello-2.10
+    - ./configure
+    - make
+  artifacts:
+    paths:
+      - gnu/gnu-hello/hello-2.10/hello
+    expire_in: 1 week
+
+test-hello:
+  # FIXME: make a custom image with build-essential preinstalled!
+  image: ubuntu
+  stage: c-test
+  rules:
+    - changes: # only run job if this directory has changes
+      - gnu/gnu-hello/hello-2.10
+      - gnu/gnu-hello/gitlabci.yml
+      when: always
+    - when: never
+  before_script:
+    - apt-get update && apt-get -y install build-essential
+    - pwd
+    - ls -l
+  script:
+    - cd gnu/gnu-hello/hello-2.10
+    - ./configure # need to re-generate makefile here due to new container instance
+    - make check

@@ -1,3 +1,8 @@
+# References
+- Predefined variables: https://docs.gitlab.com/ce/ci/variables/predefined_variables.html
+- Deprecated variables: https://docs.gitlab.com/ee/ci/variables/deprecated_variables.html
+- At time of writing: this is the tracking issue for the feature of being able to easily make commit to the same repository using CI (other than setting up ssh-keys): https://gitlab.com/groups/gitlab-org/-/epics/3559
+
 # Run CI / CD process only if something changes in a specific directory
 
 Seems possible but controversial:

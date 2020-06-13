@@ -1,26 +1,12 @@
----
-
-image: ubuntu
+# Top-level gitlab CI file
+# Should only include project-specific file
+# and the project-specific files should be configured to only run jobs if their own files are changed.
 
 stages:
-  - build
-  - test
+  - docker-build
+  - c-build
+  - c-test
 
-build:
-  stage: build
-  before_script:
-    - apt update && apt -y install build-essential
-    - pwd
-    - ls -l
-    - cd gnu/gnu-hello/hello-2.10
-  script:
-    - ./configure
-    - make
-  artifacts:
-    paths:
-      - hello
-
-test:
-  stage: test
-  script:
-    - make check
+include:
+  - local: '/docker/basics/gitlabci.yml'
+  - local: '/gnu/gnu-hello/gitlabci.yml'

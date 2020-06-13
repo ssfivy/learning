@@ -1,8 +1,7 @@
 
 build-hello:
-  # FIXME: make a custom image with build-essential preinstalled!
-  image: ubuntu
-  stage: c-build
+  image: $CI_REGISTRY_IMAGE:buildroot-1 #FIXME: Probably not a good idea to hardcode specific tags
+  stage: build
   rules:
     - changes: # only run job if this directory has changes
       - gnu/gnu-hello/hello-2.10
@@ -10,7 +9,6 @@ build-hello:
       when: always
     - when: never
   before_script:
-    - apt-get update && apt-get -y install build-essential
     - pwd
     - ls -l
   script:
@@ -23,9 +21,8 @@ build-hello:
     expire_in: 1 week
 
 test-hello:
-  # FIXME: make a custom image with build-essential preinstalled!
-  image: ubuntu
-  stage: c-test
+  image: $CI_REGISTRY_IMAGE:buildroot-1 #FIXME: Probably not a good idea to hardcode specific tags
+  stage: test
   rules:
     - changes: # only run job if this directory has changes
       - gnu/gnu-hello/hello-2.10
@@ -33,10 +30,11 @@ test-hello:
       when: always
     - when: never
   before_script:
-    - apt-get update && apt-get -y install build-essential
     - pwd
     - ls -l
   script:
     - cd gnu/gnu-hello/hello-2.10
     - ./configure # need to re-generate makefile here due to new container instance
     - make check
+
+#EOF

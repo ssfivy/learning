@@ -3,7 +3,7 @@
 build-dockerbuildroot:
   # TODO: Use Kaniko https://docs.gitlab.com/ee/ci/docker/using_kaniko.html
   # Currently based on https://stackoverflow.com/questions/39608736/docker-in-docker-with-gitlab-shared-runner-for-building-and-pushing-docker-image
-  stage: docker-build
+  stage: ci-image
   image: docker
   services:
     - docker:dind
@@ -22,3 +22,12 @@ build-dockerbuildroot:
     - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    # TODO: Set expiration policy for older images
+
+# FIXME: The above docker login is probably still not the best since I got this warning:
+#  $ docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+# WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+# WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+# Configure a credential helper to remove this warning. See
+# https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+# Login Succeeded

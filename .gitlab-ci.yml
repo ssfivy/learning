@@ -3,9 +3,14 @@
 # and the project-specific files should be configured to only run jobs if their own files are changed.
 
 stages:
-  - docker-build
-  - c-build
-  - c-test
+  # Stage names are proposal only
+  - ci-image        # Build docker images that are meant to perform actual CI operations
+  - build           # Build / compile applications and the like
+  - test            # Run tests on applications
+  - image-deploy    # Build docker image for deployment
+  - image-test      # test docket image
+  - deploy-staging  # Deploy to staging
+  - deploy-prod     # Deploy to production
 
 include:
   - local: '/docker/basics/gitlabci.yml'

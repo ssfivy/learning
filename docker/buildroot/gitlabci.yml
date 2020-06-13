@@ -1,0 +1,24 @@
+# Gitlab CI config file for this specific docker image
+
+build-dockerbuildroot:
+  # TODO: Use Kaniko https://docs.gitlab.com/ee/ci/docker/using_kaniko.html
+  # Currently based on https://stackoverflow.com/questions/39608736/docker-in-docker-with-gitlab-shared-runner-for-building-and-pushing-docker-image
+  stage: docker-build
+  image: docker
+  services:
+    - docker:dind
+  rules:
+    - changes: # only run job if this has changes
+      - docker/buildroot/Dockerfile
+      - docker/buildroot/gitlabci.yml
+      when: always
+    - when: never
+  script:
+    - cd docker/buildroot
+    - docker version
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    # push only for tags
+    - "[[ -z $CI_COMMIT_TAG ]] && exit 0"
+    - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG

@@ -27,17 +27,24 @@ RUN apt-get update && \
 	zip
 
 # Install python dependencies (for reference)
+ENV PYTHONIOENCODING utf-8
 RUN yes | pip3 install --upgrade pip setuptools
 RUN yes | pip3 install \
 	cryptography \
 	requests
-
-RUN echo "Docker build shell is $0, available env variables are: \n" && env
 
 # might be needed by some stuff
 RUN locale-gen en_US.UTF-8
 #ENV LANG en_US.UTF-8
 #ENV LANGUAGE en_US:en
 #ENV LC_ALL en_US.UTF-8
+
+# Buildroot does not want to be built from root
+RUN adduser --disabled-password --gecos "" builder
+ENV HOME /home/builder
+WORKDIR /home/builder
+USER builder
+
+RUN echo "I am $(whoami), Docker build shell is $0, available env variables are: \n" && env
 
 CMD ["/bin/bash"]

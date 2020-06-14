@@ -1,0 +1,8 @@
+[Unit]
+Description=Run hello every 5 min
+
+[Timer]
+OnUnitActiveSec=5m
+
+[Install]
+WantedBy=timers.target

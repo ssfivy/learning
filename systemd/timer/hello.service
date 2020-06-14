@@ -1,0 +1,6 @@
+[Unit]
+Description=timer test script
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemd-cat echo "timer test script"

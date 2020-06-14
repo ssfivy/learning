@@ -1,0 +1,25 @@
+
+# set up example server
+# the values starting with REPLACE_ should be replaced with sed
+server {
+
+    listen   443 ssl;
+
+    ssl_certificate         REPLACE_SSLCERT;
+    ssl_certificate_key     REPLACE_SSLKEY;
+
+    server_name rico.home.intra.ssfivy.com;
+    access_log /var/log/nginx/nginx.vhost.access.log;
+    error_log /var/log/nginx/nginx.vhost.error.log;
+    location / {
+        root   REPLACE_WWWROOT;
+        index  index.html;
+    }
+}
+
+# Redirect http requests to https
+server {
+    listen 80 ;
+    server_name rico.home.intra.ssfivy.com;
+    return 301 https://$host$request_uri;
+}

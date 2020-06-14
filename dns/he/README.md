@@ -1,6 +1,8 @@
 # DNS experimentation with Hurricane Electric
 
-No automated shell scripts are available since this is somebody else's infrastructure.
+No automated "do everything" shell scripts are available since this is somebody else's infrastructure.
+
+Hurricane Electric provides a free no-frills DNS service which supports dynamic DNS and is supported by various tools, so it is good for experiments. For serious business use you may or may not want someone else with an explicit support contract.
 
 ## TTL Values
 When experimenting with changes, use very low TTL values e.g. 300 seconds,
@@ -45,3 +47,13 @@ Then add new A record and tick the box to allow dynamic DNS. Then click the DDNS
 Note that you do not have to perform this call from the computer that needs the DNS pointed to either.
 This opens up some possibilities e.g. using a third machine to perform the queries and update,
 or performing updates triggered by CI/CD/other infra monitoring tools.
+
+- [ ] TODO: Try automating this using shell / cron / systemd-timer or the like
+
+## Tools
+
+There are some clients that can update this for you.
+I have checked out [lexicon](https://github.com/AnalogJ/lexicon) for now and it seems to work.
+Note lexicon he provider works by querying the web api and parsing the resulting web pages,
+so it may or may not be the most reliable way of updating things.
+You also need to provide your actual login username and password which is less secure than a per-domain key.

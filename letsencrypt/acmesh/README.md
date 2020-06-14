@@ -26,12 +26,15 @@ see the accompanying shell script for details.
 
 ## TODO
 - Figure out: Do I need to maintain / backup anything?
-- Experiment with alternate DNS provider (tested with Hurricane Electric, which doesnt use tokens, so it needs my actual account credentials which is rather iffy)
+- Experiment with alternate DNS provider (tested with Hurricane Electric,
+  which doesnt use tokens, so it needs my actual account credentials which is rather iffy)
 
 ## Notes
 - LetsEncrypt only issues Domain Validation certs, so you cannot fill data like Organisation Name and the like.
 - Is there something I need to do with let's encrypt account management?
-- Hurricane Electric API uses your actual login and password, and this is cached in `~/.acme.sh/account.conf` - so protect this file! (it's globally readable - really?)
+- Hurricane Electric API uses your actual login and password, and this is cached in `~/.acme.sh/account.conf` - so protect this file!
+    - It is also used to store credentials/tokens for other API backends.
+    - The file does have read permission for everyone, but the `.acme.sh` directory created by the installer is permission `700` - only accessible to the user.
 
 ## References
 - The various ways to issue a cert: https://github.com/acmesh-official/acme.sh/wiki/How-to-issue-a-cert

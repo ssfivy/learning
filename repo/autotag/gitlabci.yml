@@ -1,0 +1,29 @@
+
+repo-autotag:
+  image: ubuntu
+  stage: build
+  rules:
+    - changes: # only run job if this directory has changes
+      - repo/autotag/autotag.sh
+      - repo/autotag/gitlabci.yml
+      when: always
+    - when: never
+  variables:
+    DEBIAN_FRONTEND: 'noninteractive'
+  # These are based on https://forum.gitlab.com/t/is-it-possible-to-commit-artifacts-into-the-git/22218/7
+  before_script:
+    - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
+    - eval `ssh-agent -s`
+    - echo "${SSH_PRIVATE_KEY_B64}" | base64 -d | tr -d '\r' | ssh-add - > /dev/null # add ssh ke
+    - mkdir -p $HOME/.ssh
+    - chmod 700 $HOME/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - git config --global user.email "ssfivy-gitlabci@example.com"
+    - git config --global user.name  "ssfivy-gitlabci"
+    #- echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
+  script:
+    - mkdir -p $HOME/repo-checkout
+    - cd $HOME/repo-checkout
+    - repo init -u https://gitlab.com/ssfivy/learning-repo.git -b master
+    - repo sync
+    - bash learning-contents/repo/autotag/autotag.sh

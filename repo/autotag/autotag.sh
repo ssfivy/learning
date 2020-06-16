@@ -4,9 +4,16 @@ set -xe
 
 THIS_SCRIPT_DIR=$(dirname "$(realpath -s "$0")")
 TOPDIR=$(realpath "$THIS_SCRIPT_DIR/../../../")
+
+# Directory where the manifest repository is checked out
+# Must match the directory location specified in manifest xml file
 MANIFESTREPO="$TOPDIR/learning-manifest"
 
-REMOTE_NAME="gl-ssfivy"
+# Remote name for the manifest repository
+# Must match the remote name specified in manifest xml file
+REMOTE_NAME="gl-ssfivy-git"
+
+# Branch name in the repository where we will commit all the locked manifests.
 FIXEDREV_BRANCH_NAME="buildtags"
 
 # assume fresh repo sync
@@ -27,7 +34,7 @@ check-branch-remote () {
         # create remote branch
         # only works automatically if checked out via ssh
         # since our manifest is using http urls, this does not work for now.
-        #git push --set-upstream gl-ssfivy $FIXEDREV_BRANCH_NAME
+        #git push --set-upstream "$REMOTE_NAME" $FIXEDREV_BRANCH_NAME
         echo "Please create a remote branch named '$FIXEDREV_BRANCH_NAME'"
         exit 1
     fi
@@ -38,7 +45,7 @@ check-branch-remote
 
 lock-manifest () {
     # we want to snapshot default branch
-    DEFAULT_BRANCH_NAME=$(git remote show gl-ssfivy | grep "HEAD branch" | sed 's/.*: //' )
+    DEFAULT_BRANCH_NAME=$(git remote show "$REMOTE_NAME" | grep "HEAD branch" | sed 's/.*: //' )
     git checkout "$DEFAULT_BRANCH_NAME"
     # Make sure you snapshot the revisions BEFORE checking out the branch with all the revision data!
     # Since the content of this branch changes everytime we make a snapshot,

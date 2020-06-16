@@ -12,13 +12,17 @@ repo-autotag:
     DEBIAN_FRONTEND: 'noninteractive'
   # These are based on https://forum.gitlab.com/t/is-it-possible-to-commit-artifacts-into-the-git/22218/7
   before_script:
-    - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
-    - eval `ssh-agent -s`
-    - echo "${SSH_PRIVATE_KEY_B64}" | base64 -d | tr -d '\r' |  ssh-add - > /dev/null # add ssh ke
+    - 'apt-get update -qy && apt-get install openssh-client git curl -qqy )'
     - mkdir -p $HOME/.ssh
     - chmod 700 $HOME/.ssh
     - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - 'which git || ( apt-get update -qy && apt-get install git -qqy )'
+    - mkdir ~/bin
+    - export PATH=~/bin:$PATH
+    - curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+    - chmod a+x ~/bin/repo
+    # above this comment should be consolidated into cusotm docker image
+    - eval `ssh-agent -s`
+    - echo "${SSH_PRIVATE_KEY_B64}" | base64 -d | tr -d '\r' |  ssh-add - > /dev/null # add ssh ke
     - git config --global user.email "ssfivy-gitlabci@example.com"
     - git config --global user.name  "ssfivy-gitlabci"
   script:

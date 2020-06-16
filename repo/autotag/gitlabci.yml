@@ -12,7 +12,7 @@ repo-autotag:
     DEBIAN_FRONTEND: 'noninteractive'
   # These are based on https://forum.gitlab.com/t/is-it-possible-to-commit-artifacts-into-the-git/22218/7
   before_script:
-    - 'apt-get update -qy && apt-get install openssh-client git curl -qqy '
+    - 'apt-get update -qy && apt-get install openssh-client git curl python -qqy '
     - mkdir -p $HOME/.ssh
     - chmod 700 $HOME/.ssh
     - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'

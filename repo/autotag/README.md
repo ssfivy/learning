@@ -48,8 +48,8 @@ For the private keys, you have two options:
 
 For the second option, you have the option to base64-encode the private key so the variable masking feature works.
 Note this is not 100% foolproof for protecting your private key since someone can extract it
-by triggering a CI with their own code that grabs the value and say, print it hex-encoded or the like.
-You want the protect feature for that.
+by triggering a CI with their own code that grabs the value and say, print it hex-encoded or the like. You want the protect feature for that.
+Note that as long as you dont echo that variable, you technically dont need to mask it.
 
 ### Details for this specific experiment
 

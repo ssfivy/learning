@@ -17,10 +17,10 @@ repo-autotag:
     - echo "${SSH_PRIVATE_KEY_B64}" | base64 -d | tr -d '\r' |  ssh-add - > /dev/null # add ssh ke
     - mkdir -p $HOME/.ssh
     - chmod 700 $HOME/.ssh
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - 'which git || ( apt-get update -qy && apt-get install git -qqy )'
     - git config --global user.email "ssfivy-gitlabci@example.com"
     - git config --global user.name  "ssfivy-gitlabci"
-    #- echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
   script:
     - mkdir -p $HOME/repo-checkout
     - cd $HOME/repo-checkout

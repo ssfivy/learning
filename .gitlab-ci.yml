@@ -16,3 +16,4 @@ include:
   - local: '/docker/basics/gitlabci.yml'
   - local: '/docker/buildroot/gitlabci.yml'
   - local: '/gnu/gnu-hello/gitlabci.yml'
+  - local: '/repo/autotag/gitlabci.yml'

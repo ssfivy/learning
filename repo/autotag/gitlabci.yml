@@ -3,10 +3,18 @@ repo-autotag:
   image: ubuntu
   stage: build
   rules:
-    - changes: # only run job if this directory has changes
+    # run job on commits to master
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
+    # run this job if there's changes in the tags
+    - if: $CI_COMMIT_TAG
+      when: always
+    # run job if this directory has changes
+    - changes:
       - repo/autotag/autotag.sh
       - repo/autotag/gitlabci.yml
       when: always
+    # else do not run job (so branches dont generate locked manifests)
     - when: never
   variables:
     DEBIAN_FRONTEND: 'noninteractive'

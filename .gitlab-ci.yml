@@ -9,11 +9,13 @@ stages:
   - test            # Run tests on applications
   - image-deploy    # Build docker image for deployment
   - image-test      # test docket image
+  - gen-docs        # Generate documentation
   - deploy-staging  # Deploy to staging
   - deploy-prod     # Deploy to production
 
 include:
   - local: '/docker/basics/gitlabci.yml'
   - local: '/docker/buildroot/gitlabci.yml'
+  - local: '/flask/jinja/gitlabci.yml'
   - local: '/gnu/gnu-hello/gitlabci.yml'
   - local: '/repo/autotag/gitlabci.yml'

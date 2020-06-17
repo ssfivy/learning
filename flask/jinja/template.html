@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<style>
+.output {font: 1rem 'Fira Sans', sans-serif;}
+dt { font-weight: bold;}
+dl,
+dd { font-size: .9rem; }
+dd { margin-bottom: 1em; }
+
+table.payload_title td:first-child { background: white; color:black; font-weight:bold}
+table.payload_desc  td:first-child { background: rgb(153, 204, 255); color:black; font-weight:normal}
+
+h1 { font-family: monospace; font-size: 24px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; }
+h2 { font-family: monospace; font-size: 19px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 20.4px; }
+h3 { font-family: monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; }
+p { font-family: monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; }
+blockquote { font-family: monospace; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; }
+pre { font-family: monospace; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5667px; }
+
+table { font-family: monospace;  }
+		</style>
+	</head>
+	<body>
+		<h1>Heading1</h1>
+		<p>{{ content['title'] }}</p>
+		<h2>Heading2</h2>
+		<p>{{ content['intro'] }}</p>
+		{% for pkt in content['entries'] %}
+		<h3>Entry {{ '0x%02X' % pkt['value'] }} : {{ pkt['name'] }}</h3>
+		<p>{{ pkt['desc'] }}</p>
+		{% endfor %}
+	</body>
+</html>

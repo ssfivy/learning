@@ -7,9 +7,9 @@ gen-yurucan-docs:
   rules:
     # only run this job if this directory content changes
     - changes:
-      - template.html
-      - gen-docs.py
-      - gitlabci.yml
+      - flask/jinja/template.html
+      - flask/jinja/gen-docs.py
+      - flask/jinja/gitlabci.yml
       when: always
     - when: never
 
@@ -17,9 +17,9 @@ gen-yurucan-docs:
     - pip3 install jinja2 pyyaml
 
   script:
-    - cd docs
+    - cd flask/jinja
     - python3 gen-docs.py
 
   artifacts:
     paths:
-      - docs/output/output.html
+      - flask/jinja/output/output.html

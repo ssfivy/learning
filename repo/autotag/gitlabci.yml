@@ -19,8 +19,6 @@ repo-autotag:
   variables:
     # Don't prompt anything during apt install
     DEBIAN_FRONTEND: 'noninteractive'
-    # Set tz to my time so the commit timestamps are my local time
-    TZ: 'Australia/Sydney'
 
   # These are based on https://forum.gitlab.com/t/is-it-possible-to-commit-artifacts-into-the-git/22218/7
   before_script:

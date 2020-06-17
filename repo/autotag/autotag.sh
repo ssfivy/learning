@@ -62,7 +62,8 @@ lock-manifest () {
         mv new-default.xml default.xml
         # File is changed, commit and push
         git add default.xml
-        COMMIT_MESSAGE="Manifest revision locked at $(date --iso-8601=seconds)"
+        # timestamp in my local time
+        COMMIT_MESSAGE="Manifest revision locked at $(TZ='Australia/Sydney' date --iso-8601=seconds)"
         git commit -m "$COMMIT_MESSAGE"
         git push $REMOTE_NAME $FIXEDREV_BRANCH_NAME
     fi

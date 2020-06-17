@@ -1,0 +1,20 @@
+stages:
+  - gen-docs
+
+gen-figlet:
+  image: ubuntu:latest
+  stage: gen-docs
+  rules:
+    # only run this job if this directory content changes
+    - changes:
+      - asciiart/figlet/gitlabci.yml
+      when: always
+    - when: never
+
+  before_script:
+    - 'apt-get update -qy && apt-get install figlet -qqy '
+
+  script:
+    - figlet -f banner Starting test
+    - figlet -f big Hello, World!
+    - figlet -f future End test

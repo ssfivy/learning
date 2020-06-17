@@ -17,7 +17,11 @@ repo-autotag:
     # else do not run job (so branches dont generate locked manifests)
     - when: never
   variables:
+    # Don't prompt anything during apt install
     DEBIAN_FRONTEND: 'noninteractive'
+    # Set tz to my time so the commit timestamps are my local time
+    TZ: 'Australia/Sydney'
+
   # These are based on https://forum.gitlab.com/t/is-it-possible-to-commit-artifacts-into-the-git/22218/7
   before_script:
     - 'apt-get update -qy && apt-get install openssh-client git curl python -qqy '
@@ -33,6 +37,7 @@ repo-autotag:
     - echo "${SSH_PRIVATE_KEY_B64}" | base64 -d | tr -d '\r' |  ssh-add - > /dev/null # add ssh ke
     - git config --global user.email "ssfivy-gitlabci@example.com"
     - git config --global user.name  "ssfivy-gitlabci"
+
   script:
     - mkdir -p $HOME/repo-checkout
     - cd $HOME/repo-checkout

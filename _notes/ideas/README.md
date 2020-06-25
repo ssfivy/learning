@@ -1,5 +1,10 @@
 # Potential idea collections
 - Mapping APIs : Create webpage with map with multiple vehicles travelling in real-time (like uber preview screen)
+    - https://openmaptiles.org/
+    - potentially useful info : https://news.ycombinator.com/item?id=23609819
+    - https://www.qgis.org/en/site/
+    - http://www.opengee.org/
+    - google earth
 - Make random, silly, but polished websites such as https://random.country , https://sendnoodz.io/ to train basic webdev skills. Also, Let's Encrypt!
 - Twilio SMS / Call / Whatsapp APIs
 - Buildroot + Gitlab CI
@@ -9,6 +14,16 @@
 - MQTT+Website: Create a website / backend service that displays some graphs based on data received from MQTT
 - Figure out where to host all the web stuff on the cheap
 - https://course.fast.ai/
+- learn rust: rustlings repo, the book
+- Wireviz: https://github.com/formatc1702/WireViz and https://news.ycombinator.com/item?id=23623392
+- play with time and timezones
+    - provide information similar to timeanddate.com and worldtimeapi.org
+    - geoip databases e.g. https://dev.maxmind.com/geoip/geoip2/geolite2/
+- golang license reporting
+    - https://github.com/pivotal/LicenseFinder
+        - https://github.com/rancher/trash
+        - https://github.com/kardianos/govendor
+- see if there's anything interesting in https://github.com/kamranahmedse/developer-roadmap
 - I'm sure I have other todolists like this from long ago
 
 # Bugs I found and probably should report

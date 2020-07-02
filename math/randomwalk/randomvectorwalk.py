@@ -11,6 +11,7 @@ import unittest
 import matplotlib.pyplot as plt
 
 # Configuration!
+walker_count = 3
 polar_vector_count = 1000
 vector_magnitude = 1
 
@@ -24,30 +25,44 @@ def vector_sum_angle(magnitude1, theta1, magnitude2, theta2):
 
 
 # Let's add random walk vectors! All same length, but random direction
-polar_vectors = [(vector_magnitude, secrets.randbelow(361))
-                 for i in range(polar_vector_count)]
+polar_vectors = []
+for w in range(walker_count):
+    polar_vectors.append([(vector_magnitude, secrets.randbelow(361))
+                          for i in range(polar_vector_count)])
 
 # oh no all these vectors stack on top of one another
 # we have to convert them all into bector from origin if we want to plot them
 
-latest_vector = (0, 0)
-magnitude = [0]
-theta = [0]
-for v in polar_vectors:
-    r = vector_sum_magnitude(latest_vector[0], latest_vector[1], v[0], v[1])
-    t = vector_sum_angle(latest_vector[0], latest_vector[1], v[0], v[1])
-    latest_vector = (r, t)
-    magnitude.append(r)
-    theta.append(t)
+rmax = 0
+magnitudes = []
+thetas = []
+for w in range(walker_count):
+    latest_vector = (0, 0)
+    magnitude = [0]
+    theta = [0]
+    for v in polar_vectors[w]:
+        r = vector_sum_magnitude(
+            latest_vector[0], latest_vector[1], v[0], v[1])
+        t = vector_sum_angle(latest_vector[0], latest_vector[1], v[0], v[1])
+        latest_vector = (r, t)
+        magnitude.append(r)
+        theta.append(t)
+
+        if r > rmax:
+            rmax = r
+
+    magnitudes.append(magnitude)
+    thetas.append(theta)
 
 # rough auto-scale our plot to size
-rmax = math.ceil(max(magnitude) + 1)
+rmax = math.ceil(rmax + 1)
 tickstep = math.floor(rmax / 8)
 rticks = list(range(0, rmax, tickstep))
 
 # Plot in polar coordinates
 ax = plt.subplot(111, projection='polar')
-ax.plot(theta, magnitude)
+for w in range(walker_count):
+    ax.plot(thetas[w], magnitudes[w])
 ax.set_rmax(rmax)
 ax.set_rticks(rticks)  # Less radial ticks
 ax.set_rlabel_position(-22.5)  # Move radial labels away from plotted line

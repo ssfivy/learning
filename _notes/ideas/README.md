@@ -24,6 +24,8 @@
         - https://github.com/rancher/trash
         - https://github.com/kardianos/govendor
 - see if there's anything interesting in https://github.com/kamranahmedse/developer-roadmap
+- benchmarking: figure out phoronix test suite / openbenchmarking
+    - Try to benchmark yocto target devices; don't forget Gernot's benchmarking crimes!
 - I'm sure I have other todolists like this from long ago
 
 # Bugs I found and probably should report

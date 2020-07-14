@@ -29,7 +29,8 @@
 - I'm sure I have other todolists like this from long ago
 
 # Bugs I found and probably should report
-- [ ] Git bug where .gitconfig includeif will barf if it comes across some combination of symlink + mountpoint(separate drive) + luks/dm-crypt. Cannot reliably reproduce this other than my specific desktop machine stup yet.
+- [x] Git bug where .gitconfig includeif will barf if it comes across some combination of symlink + mountpoint(separate drive) + luks/dm-crypt. Cannot reliably reproduce this other than my specific desktop machine stup yet.
+    - Found a workaround: Use `**/` instead of `~/` in includeif match. In practice this may match more than expected but works for me so far. Also found out that this issue still happens without luks / dm-crypt.
 - [ ] Vagrant libvirt plugin does not seem to support emulated TPM 2.0 devices ( checking the xml file templates does not seem to have this option) - probably not much demand for this?
 - [ ] Yocto meta-llvm does not seem to handle its sources being archived (makes compile errors)
 - [ ] openstlinux setup scropt does not seem to like being started from my zsh shell.

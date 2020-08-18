@@ -36,9 +36,18 @@ build_tpm2tss () {
     pushd $REPODIR
 
     ./bootstrap
-    ./configure
+    ./configure --with-udevrulesdir --with-udevrulesprefix # These don't seem to work?
     make "-j$(nproc)" check
     sudo make install
+
+    # FIXME: Is this needed?
+    #sudo cp dist/tpm-udev.rules             /etc/udev/rules.d/40-tpm-udev.rules
+    #sudo cp dist/sysusers.d/tpm2-tss.conf   /etc/sysusers.d/tpm2-tss.conf
+    #sudo addgroup --system tss
+    #ME=$(whoami); sudo -E echo $ME tss
+    # do this every startup (default udev rule doesnt seem to work?)
+    # sudo chgrp tss /dev/tpmrm0
+
     popd
     sudo ldconfig #update runtime bindings so our libs can be found
 }

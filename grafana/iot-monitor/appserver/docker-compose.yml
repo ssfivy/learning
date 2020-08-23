@@ -1,0 +1,84 @@
+version: "3"
+services:
+
+  # Relevant docs for graphite Docker:
+  # https://graphite.readthedocs.io/en/latest/install.html
+  graphite:
+    image: graphiteapp/graphite-statsd:1.1.7-6
+    container_name: graphite
+    restart: always
+    networks:
+      grafana-net:
+        ipv4_address: 172.16.100.50
+    ports:
+      - "8880:80"
+      - "2003-2004:2003-2004"
+
+  # Relevant docs for grafana Docker:
+  # https://grafana.com/docs/grafana/latest/installation/docker/
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      grafana-net:
+        ipv4_address: 172.16.100.100
+    #volumes:
+      #- grafana-storage
+
+  # Relevant docs for Fluentd Docker:
+  # https://docs.fluentd.org/container-deployment/install-by-docker
+  # https://docs.fluentd.org/container-deployment/docker-compose
+  fluentd:
+    image: fluent/fluentd:v1.11-debian-1
+    container_name: fluentd
+    restart: always
+    volumes:
+      - ./etc:/fluentd/etc
+    networks:
+      elk-net:
+        ipv4_address: 172.16.80.10
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    environment:
+      FLUENTD_CONF: fluentd.conf
+
+  #
+  #  elasticsearch:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+  #  networks:
+  #    elk-net:
+  #      ipv4_address: 172.16.80.60
+  #  environment:
+  #    - "discovery.type=single-node"
+  #  expose:
+  #    - "9200"
+  #  ports:
+  #    - "9200:9200"
+  #kibana:
+  #  image: kibana:7.2.0
+  #  networks:
+  #    elk-net:
+  #      ipv4_address: 172.16.80.110
+  #  ports:
+  #    - "5601:5601"
+
+networks:
+  grafana-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.100.0/24"
+
+  elk-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.80.0/24"
+
+#volumes:
+  #grafana-volume:
+    #external: true

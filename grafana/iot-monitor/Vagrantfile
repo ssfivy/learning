@@ -23,6 +23,7 @@ Vagrant.configure("2") do |config|
       end
 
     dev.vm.network "private_network", ip: "10.1.1.10"
+
     dev.vm.hostname = "device"
     dev.vm.provision "shell", inline: <<-SHELL
       apt-get update
@@ -62,7 +63,17 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get install -y #{@common_pkgs} \
         docker.io docker-compose
+      adduser vagrant docker
     SHELL
+
+    # Map port for graphite webappp
+    app.vm.network "forwarded_port", guest: 8880, host: 8880, host_ip: "127.0.0.1"
+    # Map port for grafana webappp
+    app.vm.network "forwarded_port", guest: 3000, host: 3000, host_ip: "127.0.0.1"
+
+    # Map fluentd ingress
+    app.vm.network "forwarded_port", guest: 24224, host: 24224, host_ip: "127.0.0.1"
+
   end
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.

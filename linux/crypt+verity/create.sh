@@ -63,7 +63,7 @@ cryptsetup -v \
     --cipher aes-xts-plain64 \
     --key-size 512 \
     --hash sha256 \
-    --iter-time 20 \
+    --iter-time 4 \
     --use-urandom \
     --key-file "$PASSWDFILE" \
     --batch-mode \
@@ -93,6 +93,13 @@ roothash=$(echo "$FORMAT_OUTPUT" | grep "Root hash" | cut -f 2)
 echo "Validate veritysetup hash without mounting"
 # this command is purely userspace and dont need sudo
 veritysetup verify "$LOOPFILE" "$HASHFILE" "$roothash" --verbose
+
+echo "Experiment: Move the loopfile and hashfile"
+# This is to test that the veritysetup hash does not include the full device path
+mv "$LOOPFILE" "${LOOPFILE}2"
+mv "$HASHFILE" "${HASHFILE}2"
+export LOOPFILE="${LOOPFILE}2"
+export HASHFILE="${HASHFILE}2"
 
 echo "Create dm-verity mapping"
 sudo veritysetup open "$LOOPFILE" "$VERITYDEVICE" "$HASHFILE" "$roothash"

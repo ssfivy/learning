@@ -17,4 +17,3 @@ gen-figlet:
   script:
     - figlet -f banner Starting test
     - figlet -f big Hello, World!
-    - figlet -f future End test

@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -70,6 +71,20 @@ https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/
 https://www.alexedwards.net/blog/a-recap-of-request-handling
 */
 
+// If unspecified and is GET, grab the arguments and forward as udp to another port
+// purely for experiment purposes
+func hdefault(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		conn, err := net.Dial("udp", "127.0.0.1:50000")
+		if err != nil {
+			// handle error
+		}
+		fmt.Fprintf(conn, "%s", r.URL)
+		conn.Close()
+	}
+}
+
 func main() {
 
 	// SYSTEM STUFFS
@@ -86,6 +101,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/h1/", h1h)
 	mux.HandleFunc("/h2/", h2h)
+	mux.HandleFunc("/", hdefault)
 
 	// CERTIFICATES STUFF
 

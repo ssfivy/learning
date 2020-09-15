@@ -1,0 +1,8 @@
+# Run filebeats with `filebeat -e -c $PWD/filebeat.yml -d "publish" --path.data /tmp/filebeat`
+
+filebeat.inputs:
+- type: log
+  paths:
+    - /tmp/logstash-tutorial.log
+output.logstash:
+  hosts: ["localhost:5044"]

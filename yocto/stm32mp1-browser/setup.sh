@@ -22,4 +22,4 @@ source "$COCKATOODIR/$UPSTREAM/poky/oe-init-build-env" "$COCKATOODIR/build/$UPST
 
 #bitbake -c cleansstate cairo
 #bitbake -k cairo
-bitbake -k core-image-sato
+bitbake -k core-image-weston

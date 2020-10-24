@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xe
+set -e
 
 UPSTREAM="upstream"
 
@@ -20,4 +20,6 @@ source "$COCKATOODIR/$UPSTREAM/poky/oe-init-build-env" "$COCKATOODIR/build/$UPST
 # print bunch of debugging stuff including who set what variables
 #bitbake -e
 
+#bitbake -c cleansstate cairo
+#bitbake -k cairo
 bitbake -k core-image-sato

@@ -208,8 +208,338 @@ build_libstdcpp1 () {
 
 # Chapter 6 - Crosscompile temporary tools
 
+build_m4 () {
+    tar xvf $LFS/sources/m4-1.4.18.tar.xz
+    pushd "m4-1.4.18"
+    sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
+    echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+            ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(build-aux/config.guess) && \
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_m4
+
+build_ncurses () {
+    tar xvf $LFS/sources/ncurses-6.2.tar.gz
+    pushd "ncurses-6.2"
+    sed -i s/mawk// configure
+    # build 'tic' program
+    rm -rf build; mkdir -v build; pushd build
+        ../configure
+        make -C include
+        make -C progs tic
+    popd
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+        ./configure --prefix=/usr                \
+            --host=$LFS_TGT              \
+            --build=$(./config.guess)    \
+            --mandir=/usr/share/man      \
+            --with-manpage-format=normal \
+            --with-shared                \
+            --without-debug              \
+            --without-ada                \
+            --without-normal             \
+            --enable-widec
+            make
+            make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install
+            echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
+            mv -v $LFS/usr/lib/libncursesw.so.6* $LFS/lib
+            ln -sfv ../../lib/$(readlink $LFS/usr/lib/libncursesw.so) $LFS/usr/lib/libncursesw.so
+         }
+    popd
+}
+#build_ncurses
+
+build_bash () {
+    tar xvf $LFS/sources/bash-5.0.tar.gz
+    pushd "bash-5.0"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+        ./configure --prefix=/usr                   \
+            --build=$(support/config.guess) \
+            --host=$LFS_TGT                 \
+            --without-bash-malloc
+            make && make DESTDIR=$LFS install
+            mv $LFS/usr/bin/bash $LFS/bin/bash
+            ln -sv bash $LFS/bin/sh
+         }
+    popd
+}
+#build_bash
+
+build_coreutils () {
+    tar xvf $LFS/sources/coreutils-8.32.tar.xz
+    pushd "coreutils-8.32"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+    ./configure --prefix=/usr                     \
+            --host=$LFS_TGT                   \
+            --build=$(build-aux/config.guess) \
+            --enable-install-program=hostname \
+            --enable-no-install-program=kill,uptime
+            make && make DESTDIR=$LFS install
+            mv -v $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
+            mv -v $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm}        $LFS/bin
+            mv -v $LFS/usr/bin/{rmdir,stty,sync,true,uname}               $LFS/bin
+            mv -v $LFS/usr/bin/{head,nice,sleep,touch}                    $LFS/bin
+            mv -v $LFS/usr/bin/chroot                                     $LFS/usr/sbin
+            mkdir -pv $LFS/usr/share/man/man8
+            mv -v $LFS/usr/share/man/man1/chroot.1                        $LFS/usr/share/man/man8/chroot.8
+            sed -i 's/"1"/"8"/'                                           $LFS/usr/share/man/man8/chroot.8
+         }
+    popd
+}
+#build_coreutils
+
+build_diffutils () {
+    tar xvf $LFS/sources/diffutils-3.7.tar.xz
+    pushd "diffutils-3.7"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+            ./configure --prefix=/usr --host=$LFS_TGT
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_diffutils
+
+build_file () {
+    tar xvf $LFS/sources/file-5.39.tar.gz
+    pushd "file-5.39"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+            ./configure --prefix=/usr --host=$LFS_TGT
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_file
+
+build_findutils () {
+    tar xvf $LFS/sources/findutils-4.7.0.tar.xz
+    pushd "findutils-4.7.0"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+            ./configure --prefix=/usr   \
+                        --host=$LFS_TGT \
+                        --build=$(build-aux/config.guess)
+            make && make DESTDIR=$LFS install
+            mv -v $LFS/usr/bin/find $LFS/bin
+            sed -i 's|find:=${BINDIR}|find:=/bin|' $LFS/usr/bin/updatedb
+         }
+    popd
+}
+#build_findutils
+
+build_gawk () {
+    tar xvf $LFS/sources/gawk-5.1.0.tar.xz
+    pushd "gawk-5.1.0"
+    sed -i 's/extras//' Makefile.in
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+            ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(./config.guess)
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_gawk
+
+build_grep () {
+    tar xvf $LFS/sources/grep-3.4.tar.xz
+    pushd "grep-3.4"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+    ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --bindir=/bin
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_grep
+
+build_gzip () {
+    tar xvf $LFS/sources/gzip-1.10.tar.xz
+    pushd "gzip-1.10"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+            ./configure --prefix=/usr --host=$LFS_TGT
+            make && make DESTDIR=$LFS install
+            mv -v $LFS/usr/bin/gzip $LFS/bin
+         }
+    popd
+}
+#build_gzip
+
+build_make () {
+    tar xvf $LFS/sources/make-4.3.tar.gz
+    pushd "make-4.3"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+            ./configure --prefix=/usr   \
+            --without-guile \
+            --host=$LFS_TGT \
+            --build=$(build-aux/config.guess)
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_make
+
+build_patch () {
+    tar xvf $LFS/sources/patch-2.7.6.tar.xz
+    pushd "patch-2.7.6"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+    ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(build-aux/config.guess)
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_patch
+
+build_sed () {
+    tar xvf $LFS/sources/sed-4.8.tar.xz
+    pushd "sed-4.8"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+    ./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --bindir=/bin
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_sed
+
+build_tar () {
+    tar xvf $LFS/sources/tar-1.32.tar.xz
+    pushd "tar-1.32"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+    ./configure --prefix=/usr                     \
+            --host=$LFS_TGT                   \
+            --build=$(build-aux/config.guess) \
+            --bindir=/bin
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_tar
+
+build_xz () {
+    tar xvf $LFS/sources/xz-5.2.5.tar.xz
+    pushd "xz-5.2.5"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    time {
+    ./configure --prefix=/usr                     \
+            --host=$LFS_TGT                   \
+            --build=$(build-aux/config.guess) \
+            --disable-static                  \
+            --docdir=/usr/share/doc/xz-5.2.5
+            make && make DESTDIR=$LFS install
+            mv -v $LFS/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat}  $LFS/bin
+            mv -v $LFS/usr/lib/liblzma.so.*                       $LFS/lib
+            ln -svf ../../lib/$(readlink $LFS/usr/lib/liblzma.so) $LFS/usr/lib/liblzma.so
+         }
+    popd
+}
+#build_xz
+
+build_binutils2 () {
+    # Go back to our extracted source
+    pushd "binutils-2.35"
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    # Create empty build dir
+    rm -rf build; mkdir -v build; cd build
+    time {
+        ../configure                   \
+        --prefix=/usr              \
+        --build=$(../config.guess) \
+        --host=$LFS_TGT            \
+        --disable-nls              \
+        --enable-shared            \
+        --disable-werror           \
+        --enable-64-bit-bfd
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_binutils2
+
+build_gcc2 () {
+    # go back to our already extracted source
+    pushd "gcc-10.2.0"
+    rm -rf mpfr gmp mpc
+    tar xvf $LFS/sources/mpfr-4.1.0.tar.xz
+    tar xvf $LFS/sources/gmp-6.2.0.tar.xz
+    tar xvf $LFS/sources/mpc-1.1.0.tar.gz
+    mv -v mpfr-4.1.0 mpfr
+    mv -v gmp-6.2.0 gmp
+    mv -v mpc-1.1.0 mpc
+    case $(uname -m) in
+      x86_64)
+        sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+      ;;
+    esac
+    # Create empty build dir
+    rm -rf build; mkdir -v build; cd build
+    export MAKEFLAGS='-j6' # 12 threads uses more than 24G memory, causes threashing on my machine :(
+    mkdir -pv $LFS_TGT/libgcc
+    ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
+    time {
+            ../configure                                       \
+            --build=$(../config.guess)                     \
+            --host=$LFS_TGT                                \
+            --prefix=/usr                                  \
+            CC_FOR_TARGET=$LFS_TGT-gcc                     \
+            --with-build-sysroot=$LFS                      \
+            --enable-initfini-array                        \
+            --disable-nls                                  \
+            --disable-multilib                             \
+            --disable-decimal-float                        \
+            --disable-libatomic                            \
+            --disable-libgomp                              \
+            --disable-libquadmath                          \
+            --disable-libssp                               \
+            --disable-libvtv                               \
+            --disable-libstdcxx                            \
+            --enable-languages=c,c++
+            make && make DESTDIR=$LFS install
+            ln -sv gcc $LFS/usr/bin/cc
+         }
+    popd
+}
+build_gcc2
+
+# Chapter 7 - chroot and build more tools
 
 
 
+
+
+
+build_() {
+    tar xvf $LFS/sources/.tar.xz
+    pushd ""
+    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
+    # Create empty build dir
+    rm -rf build; mkdir -v build; cd build
+    time {
+            make && make DESTDIR=$LFS install
+         }
+    popd
+}
+#build_
 
 #EOF

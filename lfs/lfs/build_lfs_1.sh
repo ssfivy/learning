@@ -387,7 +387,7 @@ build_grep0 () {
     popd
 }
 #build_grep0
-if [[ "$RECOMPILE" == "true" ]]; then build_0; fi
+if [[ "$RECOMPILE" == "true" ]]; then build_grep0; fi
 
 build_gzip0 () {
     tar xvf $LFS/sources/gzip-1.10.tar.xz

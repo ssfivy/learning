@@ -106,11 +106,8 @@ EOF
 if [[ "$RECOMPILE" == "true" ]]; then create_files_symlinks; fi
 
 
-# TODO: we prrrobably dont want this under tmp since we arent supposed to have created tmp now?
-# maybe create it as tmp2?
-# must match previous location in build_lfs_1.sh
-LFSBUILD1="/tmp/build1"
-mkdir -p "$LFSBUILD1"
+# must match previous location in build_lfs_1.sh, except not we access it from within chroot
+LFSBUILD1="/tmp2/build1"
 cd "$LFSBUILD1"
 
 build_libstdcpp2 () {

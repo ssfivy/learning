@@ -1,4 +1,4 @@
-#!/bin/bash
+
 
 # Based on LFS 10 systemd edition
 
@@ -12,6 +12,10 @@ LFSDISKFILE="$BUILDDIR/lfsdiskfile"
 
 mkdir -p "$BUILDDIR"
 cd "$BUILDDIR"
+
+if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then
+    rm -f "$LFSDISKFILE"
+fi
 
 create_partition () {
 # 2.4 - create partition
@@ -31,6 +35,7 @@ echo "Removing the loop device"
 sudo losetup -d "$LOOP_DEVICE"
 }
 #create_partition
+if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then create_partition; fi
 
 # 2.6 - set $LFS variable
 LFS="/mnt/lfs"
@@ -41,6 +46,7 @@ if ! mountpoint "$LFS" ; then
 echo "Mounting the image file to $LFS"
 sudo mount -o loop "$LFSDISKFILE" "$LFS"
 fi
+
 
 get_sources() {
 # 3.1 - downloading sources
@@ -65,6 +71,8 @@ pushd "$LFS/sources"
 popd
 }
 #get_sources
+if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then get_sources; fi
+
 
 # 4.2 Create directory layout
 sudo -E mkdir -pv "$LFS"/{bin,etc,lib,sbin,usr,var,tmp}
@@ -73,20 +81,32 @@ case $(uname -m) in
 esac
 sudo -E mkdir -pv "$LFS/tools"
 
-create_lfs_user () {
+sudo -E mkdir -p "$LFS/tmp2" # directory for building stuff
+
+create_lfs_user_onhost () {
 # 4.3 Create lfs user
 sudo groupadd lfs
 sudo useradd -s /bin/bash -g lfs -m -k /dev/null lfs
 # Set password. Plaintext hardcoded since this is simply learning exercise.
 echo "lfs:lfspwd" | sudo chpasswd
-# Change dir permissions
-sudo -E chown -v lfs "$LFS"/{usr,lib,var,etc,bin,sbin,tmp,tools}
+}
+#create_lfs_user_onhost
+#if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then create_lfs_user; fi #FIXME: not reentrant
+
+
+change_dir_permissions () {
+# 4.3 Create lfs user ; Change dir permissions
+sudo -E chown -v lfs "$LFS"/{usr,lib,var,etc,bin,sbin,tmp,tools,tmp2}
 case $(uname -m) in
   x86_64) sudo -E chown -v lfs "$LFS/lib64" ;;
 esac
 sudo -E chown -v lfs "$LFS/sources"
+
 }
-#create_lfs_user
+#change_dir_permissions
+if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then change_dir_permissions; fi
+
+
 
 echo Finished the root portion of script. Run build_lfs_1.sh to continue operation as user 'lfs'.
 

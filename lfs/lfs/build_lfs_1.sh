@@ -50,6 +50,7 @@ EOF
 # WARNING: Do we need to remove /etc/bash.bashrc on the host system?
 }
 #setup_env
+if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then setup_env ; fi
 #source "$HOME/.bash_profile"
 source "$HOME/.bashrc"
 
@@ -59,9 +60,7 @@ source "$HOME/.bashrc"
 # TODO: Check /usr/bin/awk -> gawk
 # TODO: check /usr/bin/yacc -> bison
 
-# TODO: we prrrobably dont want this under tmp since we arent supposed to have created tmp now?
-# maybe create it as tmp2?
-LFSBUILD1="$LFS/tmp/build1"
+LFSBUILD1="$LFS/tmp2/build1"
 mkdir -p "$LFSBUILD1"
 cd "$LFSBUILD1"
 
@@ -82,6 +81,7 @@ build_binutils () {
     popd
 }
 #build_binutils
+if [[ "$RECOMPILE" == "true" ]]; then build_binutils; fi
 
 build_gcc1 () {
     tar xvf $LFS/sources/gcc-10.2.0.tar.xz
@@ -131,6 +131,7 @@ build_gcc1 () {
     popd
 }
 #build_gcc1
+if [[ "$RECOMPILE" == "true" ]]; then build_gcc1; fi
 
 build_linuxapiheaders () {
     tar xvf $LFS/sources/linux-5.8.3.tar.xz
@@ -146,8 +147,9 @@ build_linuxapiheaders () {
     popd
 }
 #build_linuxapiheaders
+if [[ "$RECOMPILE" == "true" ]]; then build_linuxapiheaders; fi
 
-build_glibc () {
+build_glibc1 () {
     tar xvf $LFS/sources/glibc-2.32.tar.xz
     pushd "glibc-2.32"
     case $(uname -m) in
@@ -173,20 +175,27 @@ build_glibc () {
          }
     popd
 }
-#build_glibc
+#build_glibc1
+if [[ "$RECOMPILE" == "true" ]]; then build_glibc1; fi
 
 sanity_check_initial_toolchain () {
     echo 'int main(){}' > dummy.c
     $LFS_TGT-gcc dummy.c
-    readelf -l a.out | grep '/ld-linux'
+    SANCHK=$(readelf -l a.out | grep '/ld-linux')
+    if [[ "$SANCHK" != *"Requesting program interpreter: /lib64/ld-linux-x86-64.so.2"* ]]; then
+        echo Failed sanity check! Aborting!
+        exit 1
+    fi
     rm -v dummy.c a.out
 }
 #sanity_check_initial_toolchain
+if [[ "$RECOMPILE" == "true" ]]; then sanity_check_initial_toolchain; fi
 
 finalize_limith () {
     $LFS/tools/libexec/gcc/$LFS_TGT/10.2.0/install-tools/mkheaders
 }
 #finalize_limith
+if [[ "$RECOMPILE" == "true" ]]; then finalize_limith; fi
 
 build_libstdcpp1 () {
     # source code of this is part of gcc
@@ -208,10 +217,12 @@ build_libstdcpp1 () {
     popd
 }
 #build_libstdcpp1
+if [[ "$RECOMPILE" == "true" ]]; then build_libstdcpp1; fi
 
 # Chapter 6 - Crosscompile temporary tools
+ #I added the suffix '0' to these temporary tools' bash function names
 
-build_m4 () {
+build_m40 () {
     tar xvf $LFS/sources/m4-1.4.18.tar.xz
     pushd "m4-1.4.18"
     sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
@@ -225,9 +236,10 @@ build_m4 () {
          }
     popd
 }
-#build_m4
+#build_m40
+if [[ "$RECOMPILE" == "true" ]]; then build_m40; fi
 
-build_ncurses () {
+build_ncurses0 () {
     tar xvf $LFS/sources/ncurses-6.2.tar.gz
     pushd "ncurses-6.2"
     sed -i s/mawk// configure
@@ -257,9 +269,10 @@ build_ncurses () {
          }
     popd
 }
-#build_ncurses
+#build_ncurses0
+if [[ "$RECOMPILE" == "true" ]]; then build_ncurses0; fi
 
-build_bash () {
+build_bash0 () {
     tar xvf $LFS/sources/bash-5.0.tar.gz
     pushd "bash-5.0"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -274,9 +287,10 @@ build_bash () {
          }
     popd
 }
-#build_bash
+#build_bash0
+if [[ "$RECOMPILE" == "true" ]]; then build_bash0; fi
 
-build_coreutils () {
+build_coreutils0 () {
     tar xvf $LFS/sources/coreutils-8.32.tar.xz
     pushd "coreutils-8.32"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -298,9 +312,10 @@ build_coreutils () {
          }
     popd
 }
-#build_coreutils
+#build_coreutils0
+if [[ "$RECOMPILE" == "true" ]]; then build_coreutils0; fi
 
-build_diffutils () {
+build_diffutils0 () {
     tar xvf $LFS/sources/diffutils-3.7.tar.xz
     pushd "diffutils-3.7"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -310,9 +325,10 @@ build_diffutils () {
          }
     popd
 }
-#build_diffutils
+#build_diffutils0
+if [[ "$RECOMPILE" == "true" ]]; then build_diffutils0; fi
 
-build_file () {
+build_file0 () {
     tar xvf $LFS/sources/file-5.39.tar.gz
     pushd "file-5.39"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -322,9 +338,10 @@ build_file () {
          }
     popd
 }
-#build_file
+#build_file0
+if [[ "$RECOMPILE" == "true" ]]; then build_file0; fi
 
-build_findutils () {
+build_findutils0 () {
     tar xvf $LFS/sources/findutils-4.7.0.tar.xz
     pushd "findutils-4.7.0"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -338,9 +355,10 @@ build_findutils () {
          }
     popd
 }
-#build_findutils
+#build_findutils0
+if [[ "$RECOMPILE" == "true" ]]; then build_findutils0; fi
 
-build_gawk () {
+build_gawk0 () {
     tar xvf $LFS/sources/gawk-5.1.0.tar.xz
     pushd "gawk-5.1.0"
     sed -i 's/extras//' Makefile.in
@@ -353,9 +371,10 @@ build_gawk () {
          }
     popd
 }
-#build_gawk
+#build_gawk0
+if [[ "$RECOMPILE" == "true" ]]; then build_gawk0; fi
 
-build_grep () {
+build_grep0 () {
     tar xvf $LFS/sources/grep-3.4.tar.xz
     pushd "grep-3.4"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -367,9 +386,10 @@ build_grep () {
          }
     popd
 }
-#build_grep
+#build_grep0
+if [[ "$RECOMPILE" == "true" ]]; then build_0; fi
 
-build_gzip () {
+build_gzip0 () {
     tar xvf $LFS/sources/gzip-1.10.tar.xz
     pushd "gzip-1.10"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -380,9 +400,10 @@ build_gzip () {
          }
     popd
 }
-#build_gzip
+#build_gzip0
+if [[ "$RECOMPILE" == "true" ]]; then build_gzip0; fi
 
-build_make () {
+build_make0 () {
     tar xvf $LFS/sources/make-4.3.tar.gz
     pushd "make-4.3"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -395,9 +416,10 @@ build_make () {
          }
     popd
 }
-#build_make
+#build_make0
+if [[ "$RECOMPILE" == "true" ]]; then build_make0; fi
 
-build_patch () {
+build_patch0 () {
     tar xvf $LFS/sources/patch-2.7.6.tar.xz
     pushd "patch-2.7.6"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -409,9 +431,10 @@ build_patch () {
          }
     popd
 }
-#build_patch
+#build_patch0
+if [[ "$RECOMPILE" == "true" ]]; then build_patch0; fi
 
-build_sed () {
+build_sed0 () {
     tar xvf $LFS/sources/sed-4.8.tar.xz
     pushd "sed-4.8"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -423,9 +446,10 @@ build_sed () {
          }
     popd
 }
-#build_sed
+#build_sed0
+if [[ "$RECOMPILE" == "true" ]]; then build_sed0; fi
 
-build_tar () {
+build_tar0 () {
     tar xvf $LFS/sources/tar-1.32.tar.xz
     pushd "tar-1.32"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -438,9 +462,10 @@ build_tar () {
          }
     popd
 }
-#build_tar
+#build_tar0
+if [[ "$RECOMPILE" == "true" ]]; then build_tar0; fi
 
-build_xz () {
+build_xz0 () {
     tar xvf $LFS/sources/xz-5.2.5.tar.xz
     pushd "xz-5.2.5"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -457,7 +482,8 @@ build_xz () {
          }
     popd
 }
-#build_xz
+#build_xz0
+if [[ "$RECOMPILE" == "true" ]]; then build_xz0; fi
 
 build_binutils2 () {
     # Go back to our extracted source
@@ -479,6 +505,7 @@ build_binutils2 () {
     popd
 }
 #build_binutils2
+if [[ "$RECOMPILE" == "true" ]]; then build_binutils2; fi
 
 build_gcc2 () {
     # go back to our already extracted source
@@ -524,6 +551,7 @@ build_gcc2 () {
     popd
 }
 #build_gcc2
+if [[ "$RECOMPILE" == "true" ]]; then build_gcc2; fi
 
 echo Finished the user 'lfs' portion of script. Run build_lfs_2.sh to continue .
 

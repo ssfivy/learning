@@ -34,7 +34,7 @@ change_back_to_root () {
       x86_64) chown -R root:root $LFS/lib64 ;;
     esac
 }
-#change_back_to_root
+change_back_to_root
 
 prep_virtual_kernel_fs () {
     mkdir -pv $LFS/{dev,proc,sys,run}
@@ -66,6 +66,7 @@ enter_chroot() {
     TERM="xterm"                \
     PS1='(lfs chroot) \u:\w\$ ' \
     PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+    RECOMPILE="$RECOMPILE" \
     /bin/bash --login +h tmp2/build_lfs_3.sh
 }
 enter_chroot

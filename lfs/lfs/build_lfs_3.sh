@@ -35,6 +35,7 @@ create_dirs () {
     install -dv -m 1777 /tmp /var/tmp
 }
 #create_dirs
+if [[ "$RECOMPILE" == "true" ]]; then create_dirs; fi
 
 create_files_symlinks () {
     # Chapter 7.6 - Create essential files and symlinks
@@ -102,6 +103,7 @@ EOF
     chmod -v 600  /var/log/btmp
 }
 #create_files_symlinks
+if [[ "$RECOMPILE" == "true" ]]; then create_files_symlinks; fi
 
 
 # TODO: we prrrobably dont want this under tmp since we arent supposed to have created tmp now?
@@ -131,8 +133,9 @@ build_libstdcpp2 () {
     popd
 }
 #build_libstdcpp2
+if [[ "$RECOMPILE" == "true" ]]; then build_libstdcpp2; fi
 
-build_gettext() {
+build_gettext0() {
     tar xvf /sources/gettext-0.21.tar.xz
     pushd "gettext-0.21"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -143,9 +146,10 @@ build_gettext() {
          }
     popd
 }
-#build_gettext
+#build_gettext0
+if [[ "$RECOMPILE" == "true" ]]; then build_gettext0; fi
 
-build_bison () {
+build_bison0 () {
     tar xvf /sources/bison-3.7.1.tar.xz
     pushd "bison-3.7.1"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -156,9 +160,10 @@ build_bison () {
          }
     popd
 }
-#build_bison
+#build_bison0
+if [[ "$RECOMPILE" == "true" ]]; then build_bison0; fi
 
-build_perl () {
+build_perl0 () {
     tar xvf /sources/perl-5.32.0.tar.xz
     pushd "perl-5.32.0"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -176,9 +181,10 @@ build_perl () {
          }
     popd
 }
-#build_perl
+#build_perl0
+if [[ "$RECOMPILE" == "true" ]]; then build_perl0; fi
 
-build_python() {
+build_python0() {
     tar xvf /sources/Python-3.8.5.tar.xz
     pushd "Python-3.8.5"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -190,9 +196,10 @@ build_python() {
          }
     popd
 }
-#build_python
+#build_python0
+if [[ "$RECOMPILE" == "true" ]]; then build_python0; fi
 
-build_texinfo () {
+build_texinfo0 () {
     tar xvf /sources/texinfo-6.7.tar.xz
     pushd "texinfo-6.7"
     export MAKEFLAGS='-j' # Use ALL THE CORES to compile
@@ -202,9 +209,10 @@ build_texinfo () {
          }
     popd
 }
-#build_texinfo
+#build_texinfo0
+if [[ "$RECOMPILE" == "true" ]]; then build_texinfo0; fi
 
-build_util-linux() {
+build_util-linux0() {
     tar xvf /sources/util-linux-2.36.tar.xz
     pushd "util-linux-2.36"
     mkdir -pv /var/lib/hwclock
@@ -225,7 +233,8 @@ build_util-linux() {
          }
     popd
 }
-#build_util-linux
+#build_util-linux0
+if [[ "$RECOMPILE" == "true" ]]; then build_util-linux0; fi
 
 cleanup () {
     # Section 7.14 - cleanup
@@ -233,6 +242,7 @@ cleanup () {
     rm -rf /usr/share/{info,man,doc}/*
 }
 #cleanup
+if [[ "$RECOMPILE" == "true" ]]; then cleanup; fi
 
 
 

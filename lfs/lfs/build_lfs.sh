@@ -1,6 +1,10 @@
 #!/bin/bash
 
 # top-level control script to do all operations automatically
+# since I dont like typing things manually
+
+# Note that this script is basically a poor man's buildroot / yocto,
+# so for anything remotely production use go use that instead.
 
 RECOMPILE="false"
 # uncomment this to recompile all binaries
@@ -17,12 +21,11 @@ export REBUILD_FROM_SCRATCH
 set -eu
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# Chapter 4
+# Chapter 2, 3, and 4 - stuff that needs root
 time "$THISDIR/build_lfs_0.sh"
 
-# Chapter 5 and 6
+# Chapter 5 and 6 - ran as host user lfs
 time sudo --preserve-env=RECOMPILE,REBUILD_FROM_SCRATCH -u lfs --login "$THISDIR/build_lfs_1.sh"
 
-# This TBD
-# Chapter 7
-# time sudo --preserve-env=RECOMPILE,REBUILD_FROM_SCRATCH  --login "$THISDIR/build_lfs_2.sh"
+# Chapter 7 - preparing and doing chroot as root
+time sudo --preserve-env=RECOMPILE,REBUILD_FROM_SCRATCH  --login "$THISDIR/build_lfs_2.sh"

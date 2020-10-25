@@ -17,8 +17,12 @@ export REBUILD_FROM_SCRATCH
 set -eu
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-"$THISDIR/build_lfs_0.sh"
-sudo --preserve-env=RECOMPILE,REBUILD_FROM_SCRATCH -u lfs --login "$THISDIR/build_lfs_1.sh"
+# Chapter 4
+time "$THISDIR/build_lfs_0.sh"
+
+# Chapter 5 and 6
+time sudo --preserve-env=RECOMPILE,REBUILD_FROM_SCRATCH -u lfs --login "$THISDIR/build_lfs_1.sh"
 
 # This TBD
-# sudo --preserve-env=RECOMPILE,REBUILD_FROM_SCRATCH  --login "$THISDIR/build_lfs_2.sh"
+# Chapter 7
+# time sudo --preserve-env=RECOMPILE,REBUILD_FROM_SCRATCH  --login "$THISDIR/build_lfs_2.sh"

@@ -7,13 +7,23 @@ THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 COCKATOODIR="$(realpath "$THISDIR/../../../")"
 
 BUILDDIR="$COCKATOODIR/build_lfs"
-
+ORIG_SOURCEDIR="$BUILDDIR/sources"
 LFSDISKFILE="$BUILDDIR/lfsdiskfile"
 
 mkdir -p "$BUILDDIR"
 cd "$BUILDDIR"
 
+# 2.6 - set $LFS variable
+# Do this first since almost all paths folow from this
+LFS="/mnt/lfs"
+sudo -E mkdir -p "$LFS"
+
+# Nuke all previous work if we need to rebuild from scratch
 if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then
+    if mountpoint "$LFS" ; then
+        # if we want to rebuild, unmount if mounted so we can delete properly
+        sudo umount "$LFS"
+    fi
     rm -f "$LFSDISKFILE"
 fi
 
@@ -27,6 +37,7 @@ echo "Finding first unused loop device"
 LOOP_DEVICE=$(losetup -f)
 echo "Attaching image file to loop device $LOOP_DEVICE"
 sudo losetup "$LOOP_DEVICE" "$LFSDISKFILE"
+
 # 2.5 - create filesystem on partition
 # Not using swap to simplify things a bit - also I have humongous RAM
 echo "Partitioning the loop device with ext4"
@@ -34,12 +45,9 @@ sudo mkfs.ext4 -c "$LOOP_DEVICE"
 echo "Removing the loop device"
 sudo losetup -d "$LOOP_DEVICE"
 }
+
 #create_partition
 if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then create_partition; fi
-
-# 2.6 - set $LFS variable
-LFS="/mnt/lfs"
-sudo -E mkdir -p "$LFS"
 
 #2.7 - Mount lfs partition
 if ! mountpoint "$LFS" ; then
@@ -51,27 +59,40 @@ fi
 get_sources() {
 # 3.1 - downloading sources
 # Yes we do all this as root, next step we will set the users stuff
-sudo -E mkdir -p -v "$LFS/sources"
-sudo -E chmod -v a+wt "$LFS/sources"
-pushd "$LFS/sources"
+sudo -E mkdir -p -v "$ORIG_SOURCEDIR"
+sudo -E chmod -v a+wt "$ORIG_SOURCEDIR"
+pushd "$ORIG_SOURCEDIR"
     # Grab source files
-    # Warning: This wget-list file isn't specific to book release version 10
-    # so future releases might break this!
-    sudo -E wget --continue http://www.linuxfromscratch.org/lfs/view/stable-systemd/wget-list
-    #sudo -E wget --input-file=wget-list --continue --directory-prefix="$LFS/sources"
-    # Validate checksums
     sudo -E wget http://www.linuxfromscratch.org/lfs/view/stable-systemd/md5sums
-    md5sum -c md5sums
-    # No need to grab patches seaprately, the wget-list file above already contains the patches.
-    #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/bash-5.0-upstream_fixes-1.patch
-    #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/bzip2-1.0.8-install_docs-1.patch
-    #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/coreutils-8.32-i18n-1.patch
-    #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/glibc-2.32-fhs-1.patch
-    #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/kbd-2.3.0-backspace-1.patch
+
+    # Try save some effort: Build only when md5sums invalid
+    if ! md5sum -c md5sums; then
+        # Warning: This wget-list file isn't specific to book release version 10
+        # so future releases might break this!
+        sudo -E wget --continue http://www.linuxfromscratch.org/lfs/view/stable-systemd/wget-list
+        sudo -E wget --input-file=wget-list --continue --directory-prefix="$ORIG_SOURCEDIR"
+        # Validate checksums again
+        md5sum -c md5sums
+        # No need to grab patches seaprately, the wget-list file above already contains the patches.
+        #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/bash-5.0-upstream_fixes-1.patch
+        #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/bzip2-1.0.8-install_docs-1.patch
+        #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/coreutils-8.32-i18n-1.patch
+        #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/glibc-2.32-fhs-1.patch
+        #sudo -E wget --continue http://www.linuxfromscratch.org/patches/lfs/10.0/kbd-2.3.0-backspace-1.patch
+    fi
 popd
 }
-#get_sources
-if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then get_sources; fi
+get_sources
+
+apply_sources() {
+# 3.1 - downloading sources
+# Yes we do all this as root, next step we will set the users stuff
+sudo -E mkdir -p -v "$LFS/sources"
+sudo -E chmod -v a+wt "$LFS/sources"
+sudo cp -v "$ORIG_SOURCEDIR"/* "$LFS/sources"
+}
+#apply_sources
+if [[ "$REBUILD_FROM_SCRATCH" == "true" ]]; then apply_sources; fi
 
 
 # 4.2 Create directory layout

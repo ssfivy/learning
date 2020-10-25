@@ -2,6 +2,7 @@
 
 # Based on LFS 10 systemd edition
 # Second part - run this after build_lfs_0 is finished.
+# This part is done as user 'lfs', so this entire script should be called with sudo.
 
 set -eu
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -58,6 +59,8 @@ source "$HOME/.bashrc"
 # TODO: Check /usr/bin/awk -> gawk
 # TODO: check /usr/bin/yacc -> bison
 
+# TODO: we prrrobably dont want this under tmp since we arent supposed to have created tmp now?
+# maybe create it as tmp2?
 LFSBUILD1="$LFS/tmp/build1"
 mkdir -p "$LFSBUILD1"
 cd "$LFSBUILD1"
@@ -520,26 +523,8 @@ build_gcc2 () {
          }
     popd
 }
-build_gcc2
+#build_gcc2
 
-# Chapter 7 - chroot and build more tools
-
-
-
-
-
-
-build_() {
-    tar xvf $LFS/sources/.tar.xz
-    pushd ""
-    export MAKEFLAGS='-j' # Use ALL THE CORES to compile
-    # Create empty build dir
-    rm -rf build; mkdir -v build; cd build
-    time {
-            make && make DESTDIR=$LFS install
-         }
-    popd
-}
-#build_
+echo Finished the user 'lfs' portion of script. Run build_lfs_2.sh to continue .
 
 #EOF
